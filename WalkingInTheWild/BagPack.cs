@@ -11,14 +11,16 @@
         //region public methods
         public Bagpack(float maxLoad)
         {
-            throw new NotImplementedException();
+            _clothes = new List<Cloth>();
+            _equipments = new List<Equipment>();
+            _maxLoad = maxLoad;
         }
         
         public List<Cloth> Clothes
         {
             get
             {
-                throw new NotImplementedException();
+                return _clothes;
             }
         }
 
@@ -26,7 +28,7 @@
         {
             get
             {
-                throw new NotImplementedException();
+                return _equipments;
             }
         }
 
@@ -34,19 +36,30 @@
         {
             get
             {
-                throw new NotImplementedException();
+                float totalCap = 0;
+                foreach (var equip in _equipments)
+                {
+                    totalCap = totalCap + equip.Weight;
+                }
+                
+                return _maxLoad - totalCap;
             }
         }
 
         public void Add(Cloth cloth)
         {
-            throw new NotImplementedException();
+            _clothes.Add(cloth);
         }
 
         public void Add(Equipment equipment)
         {
-            throw new NotImplementedException();
+            if (equipment.Weight > RemainingLoadCapacity){
+                throw new MaximumLoadReachedException();
+            }
+            _equipments.Add(equipment);
+         
         }
+        
         //endregion public methods
 
         //region private methods

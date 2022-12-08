@@ -10,14 +10,15 @@
         #region public methods
         public Walker(string pseudo)
         {
-            throw new NotImplementedException();
+           _pseudo = pseudo;
+        
         }
 
         public string Pseudo
         {
             get
             {
-                throw new NotImplementedException();
+                return _pseudo;
             }
         }
 
@@ -25,13 +26,17 @@
         {
             get
             {
-                throw new NotImplementedException();
+                return _backpack;
             }
         }
 
         public void TakeBagpack(Bagpack bagpack)
         {
-            throw new NotImplementedException();
+            if (_backpack != null)
+            {
+                throw new WalkerNotReadyException();
+            }
+            _backpack = bagpack;
         }
 
         public void DropBagpack()
@@ -41,17 +46,24 @@
 
         public void LoadBagpack(List<Cloth> cloths)
         {
-            throw new NotImplementedException();
+            foreach (Cloth cloth in cloths)
+            {
+                _backpack.Add(cloth);
+            }
+
         }
 
         public void LoadBagpack(List<Equipment> equipments)
         {
-            throw new NotImplementedException();
+            foreach (Equipment equipment in equipments)
+            {
+                _backpack.Add(equipment);
+            }
         }
 
         public void EmptyBagpack()
         {
-            throw new NotImplementedException();
+            _backpack = null;
         }
         #endregion public methods
 
@@ -62,6 +74,7 @@
         public class WalkerException:Exception{}
         public class WalkerNotReadyException : WalkerException { }
         public class EmptyBagpackException : WalkerException { }
+        public class BagpackNotAvailableException : WalkerException { }
         #endregion nested classes
 
 
