@@ -33,7 +33,7 @@
         {
             if (_bagpack != null)
             {
-                throw new WalkerNotReadyException();
+                throw new WalkerAlreadyCarriesABagpackException();
             }
             _bagpack = bagpack;
         }
@@ -42,7 +42,7 @@
         {
             if(_bagpack == null)
             {
-                throw new WalkerException();
+                throw new WalkerDoesntCarryABagpackException();
             }
             _bagpack = null;
         }
@@ -51,7 +51,7 @@
         {
             if (_bagpack == null)
             {
-                throw new BagpackNotAvailableException();
+                throw new WalkerDoesntCarryABagpackException();
             }
             foreach (Cloth cloth in cloths)
             {
@@ -63,7 +63,7 @@
         {
             if (_bagpack == null)
             {
-                throw new BagpackNotAvailableException();
+                throw new WalkerDoesntCarryABagpackException();
             }
             foreach (Equipment equipment in equipments)
             {
@@ -94,7 +94,8 @@
 
         #region nested classes
         public class WalkerException:Exception{}
-        public class WalkerNotReadyException : WalkerException { }
+        public class WalkerAlreadyCarriesABagpackException : Exception { }
+        public class WalkerDoesntCarryABagpackException : Exception { }
         public class EmptyBagpackException : WalkerException { }
         public class BagpackNotAvailableException : WalkerException { }
         #endregion nested classes

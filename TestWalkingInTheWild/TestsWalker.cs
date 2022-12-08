@@ -7,17 +7,18 @@ namespace TestWalkingInTheWild
     public class TestsWalker
     {
         //region private attributes
-        private Walker walker;
-        private string pseudo;
-        private Bagpack bagpack;
+        private Walker _walker;
+        private string _pseudo;
+        private Bagpack _bagpack = null;
+        private float _maxLoad = 25.50f;
         //endregion private attributes
 
         [SetUp]
         public void Setup()
         {
-            pseudo = "Pseudo";
-            walker = new Walker(pseudo);
-            bagpack = new Bagpack(25.50f);
+            _pseudo = "Pseudo";
+            _walker = new Walker(_pseudo);
+            _bagpack = new Bagpack(_maxLoad);
         }
 
         [Test]
@@ -30,69 +31,66 @@ namespace TestWalkingInTheWild
             //constructor is called in Setup() 
 
             //then
-            Assert.AreEqual(pseudo, walker.Pseudo);
-            Assert.IsNull(walker.Bagpack);
+            Assert.AreEqual(_pseudo, _walker.Pseudo);
+            Assert.IsNull(_walker.Bagpack);
         }
 
         [Test]
-        public void TakeBagpack_WalkerReady_BagpackTaken()
+        public void TakeBagpack_WalkerDoesntCarryABagpack_BagpackTaken()
         {
             //given
             //refer to Setup()
-            Bagpack bagpack = new Bagpack(20.00f);
-            Assert.Null(walker.Bagpack);
+            Assert.Null(_walker.Bagpack);
 
             //when
-            this.walker.TakeBagpack(bagpack);
+            _walker.TakeBagpack(_bagpack);
 
             //then
-            Assert.AreEqual(bagpack, walker.Bagpack);
+            Assert.AreEqual(_bagpack, _walker.Bagpack);
         }
 
         [Test]
-        public void TakeBagpack_WalkerNotReady_ThrowException()
+        public void TakeBagpack_WalkerAlreadyCarriesABagpack_ThrowException()
         {
             //given
             //refer to Setup()
-            Bagpack bagpack = new Bagpack(20.00f);
-            walker.TakeBagpack(bagpack);
-            Assert.NotNull(walker.Bagpack);
+            Assert.Null(_walker.Bagpack);
 
             //when
             //Event is called by the assertion
 
             //then
-            Assert.Throws<WalkerNotReadyException>(() => this.walker.TakeBagpack(bagpack));
+            Assert.Throws<WalkerAlreadyCarriesABagpackException>(() => _walker.TakeBagpack(_bagpack));
         }
-        
+
         [Test]        
-        public void DropBagpack_WalkerIsCarringABagpack_WalkerDropsTheBagpack()
+        public void DropBagpack_WalkerIsAlreadyCarringABagpack_WalkerDropsTheBagpack()
         {
             //given
-            //refer to Setup()
-            Assert.Null(walker.Bagpack);
+            _walker.TakeBagpack(_bagpack);
+            Assert.NotNull(_walker.Bagpack);
 
             //when
-            this.walker.TakeBagpack(bagpack);
-            this.walker.DropBagpack();
+            _walker.DropBagpack();
 
             //then
-            Assert.AreNotEqual(bagpack, walker.Bagpack);
+            Assert.IsNull(_walker.Bagpack);
         }
 
         [Test]
         public void DropBagpack_WalkerIsNotCarringABagpack_ThrowException()
         {
             //given
-            //refer to Setup method
-            Assert.Null(walker.Bagpack);
+            Assert.Null(_walker.Bagpack);
 
             //when
+            //Event is called by the assertion
 
             //then
-            Assert.Throws<WalkerException>(delegate { walker.DropBagpack(); });
+            Assert.Throws<WalkerDoesntCarryABagpackException>(() => _walker.DropBagpack());
         }
 
+        
         [Test]
         public void LoadBagpack_BagpackAvailableLoadSingleCloth_ClothIsLoadedInBagpack()
         {
@@ -100,13 +98,13 @@ namespace TestWalkingInTheWild
             //refer to Setup method
             Cloth cloth = new Cloth("Brand");
             List<Cloth> clothes = Utils.GenerateClothes(1);
-            walker.TakeBagpack(bagpack);
+            _walker.TakeBagpack(_bagpack);
 
             //when
-            this.walker.LoadBagpack(clothes);
+            this._walker.LoadBagpack(clothes);
 
             //then
-            Assert.That(bagpack.Clothes.Count, Is.EqualTo(1));
+            Assert.That(_bagpack.Clothes.Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -116,13 +114,13 @@ namespace TestWalkingInTheWild
             //refer to Setup method
             Cloth cloth = new Cloth("Brand");
             List<Cloth> clothes = Utils.GenerateClothes(5);
-            walker.TakeBagpack(bagpack);
+            _walker.TakeBagpack(_bagpack);
 
             //when
-            this.walker.LoadBagpack(clothes);
+            this._walker.LoadBagpack(clothes);
 
             //then
-            Assert.That(bagpack.Clothes.Count, Is.EqualTo(5));
+            Assert.That(_bagpack.Clothes.Count, Is.EqualTo(5));
         }
 
         [Test]
@@ -136,7 +134,7 @@ namespace TestWalkingInTheWild
             //when
 
             //then
-            Assert.Throws<BagpackNotAvailableException>(delegate { walker.LoadBagpack(clothes); });
+            Assert.Throws<WalkerDoesntCarryABagpackException>(delegate {_walker.LoadBagpack(clothes); });
         }
 
         [Test]
@@ -145,13 +143,13 @@ namespace TestWalkingInTheWild
             //given
             //refer to Setup method
             List<Equipment> equipments = Utils.GenerateEquipment(1);
-            walker.TakeBagpack(bagpack);
+            _walker.TakeBagpack(_bagpack);
 
             //when
-            walker.LoadBagpack(equipments);
+            _walker.LoadBagpack(equipments);
 
             //then
-            Assert.That(bagpack.Equipments.Count, Is.EqualTo(1));
+            Assert.That(_bagpack.Equipments.Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -160,13 +158,13 @@ namespace TestWalkingInTheWild
             //given
             //refer to Setup method
             List<Equipment> equipments = Utils.GenerateEquipment(2);
-            walker.TakeBagpack(bagpack);
+            _walker.TakeBagpack(_bagpack);
 
             //when
-            walker.LoadBagpack(equipments);
+            _walker.LoadBagpack(equipments);
 
             //then
-            Assert.That(bagpack.Equipments.Count, Is.EqualTo(2));
+            Assert.That(_bagpack.Equipments.Count, Is.EqualTo(2));
         }
 
         [Test]
@@ -177,12 +175,12 @@ namespace TestWalkingInTheWild
             List<Equipment> equipments = Utils.GenerateEquipment(5);
             foreach (Equipment equipment in equipments)
             {
-                bagpack.Add(equipment);
+                _bagpack.Add(equipment);
             }
             //when
 
             //then
-            Assert.Throws<BagpackNotAvailableException>(delegate { walker.LoadBagpack(equipments); });
+            Assert.Throws<WalkerDoesntCarryABagpackException>(delegate { _walker.LoadBagpack(equipments); });
         }
 
         [Test]
@@ -190,22 +188,22 @@ namespace TestWalkingInTheWild
         {
             //given
             //refer to Setup method
-             walker.TakeBagpack(bagpack);
+             _walker.TakeBagpack(_bagpack);
             List<Equipment> equipments = Utils.GenerateEquipment(1);
             foreach (Equipment equipment in equipments)
             {
-                bagpack.Add(equipment);
+                _bagpack.Add(equipment);
             }
             Cloth cloth = new Cloth("Brand");
             List<Cloth> clothes = Utils.GenerateClothes(1);
-            bagpack.Add(cloth);
+            _bagpack.Add(cloth);
 
             //when
-            walker.EmptyBagpack();
+            _walker.EmptyBagpack();
 
             //then
-            Assert.That(bagpack.Clothes.Count, Is.EqualTo(0));
-            Assert.That(bagpack.Equipments.Count, Is.EqualTo(0));
+            Assert.That(_bagpack.Clothes.Count, Is.EqualTo(0));
+            Assert.That(_bagpack.Equipments.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -213,12 +211,13 @@ namespace TestWalkingInTheWild
         {
             //given
             //refer to Setup method
-            walker.TakeBagpack(bagpack);
+            _walker.TakeBagpack(_bagpack);
 
             //when
 
             //then
-            Assert.Throws<EmptyBagpackException>(delegate { walker.EmptyBagpack(); });
+            Assert.Throws<EmptyBagpackException>(delegate {_walker.EmptyBagpack(); });
         }
+      
     }
 }
