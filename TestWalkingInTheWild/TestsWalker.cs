@@ -54,7 +54,8 @@ namespace TestWalkingInTheWild
         {
             //given
             //refer to Setup()
-            Assert.Null(_walker.Bagpack);
+            _walker.TakeBagpack(_bagpack);
+            Assert.NotNull(_walker.Bagpack);
 
             //when
             //Event is called by the assertion
