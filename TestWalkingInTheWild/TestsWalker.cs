@@ -130,14 +130,10 @@ namespace TestWalkingInTheWild
         {
             //given
             //refer to Setup method
-            Assert.Null(walker.Bagpack);
-
             Cloth cloth = new Cloth("Brand");
             List<Cloth> clothes = Utils.GenerateClothes(1);
 
             //when
-            walker.TakeBagpack(bagpack);
-            this.walker.DropBagpack();
 
             //then
             Assert.Throws<BagpackNotAvailableException>(delegate { walker.LoadBagpack(clothes); });
@@ -149,13 +145,11 @@ namespace TestWalkingInTheWild
             //given
             //refer to Setup method
             List<Equipment> equipments = Utils.GenerateEquipment(1);
-            foreach (Equipment equipment in equipments)
-            {
-                bagpack.Add(equipment);
-            }
             walker.TakeBagpack(bagpack);
+
             //when
             walker.LoadBagpack(equipments);
+
             //then
             Assert.That(bagpack.Equipments.Count, Is.EqualTo(1));
         }
@@ -166,13 +160,11 @@ namespace TestWalkingInTheWild
             //given
             //refer to Setup method
             List<Equipment> equipments = Utils.GenerateEquipment(2);
-            foreach (Equipment equipment in equipments)
-            {
-                bagpack.Add(equipment);
-            }
             walker.TakeBagpack(bagpack);
+
             //when
             walker.LoadBagpack(equipments);
+
             //then
             Assert.That(bagpack.Equipments.Count, Is.EqualTo(2));
         }
@@ -182,17 +174,12 @@ namespace TestWalkingInTheWild
         {
             //given
             //refer to Setup method
-            Assert.Null(walker.Bagpack);
-
             List<Equipment> equipments = Utils.GenerateEquipment(5);
             foreach (Equipment equipment in equipments)
             {
                 bagpack.Add(equipment);
             }
-
             //when
-            walker.TakeBagpack(bagpack);
-            this.walker.DropBagpack();
 
             //then
             Assert.Throws<BagpackNotAvailableException>(delegate { walker.LoadBagpack(equipments); });
@@ -203,15 +190,16 @@ namespace TestWalkingInTheWild
         {
             //given
             //refer to Setup method
+             walker.TakeBagpack(bagpack);
             List<Equipment> equipments = Utils.GenerateEquipment(1);
             foreach (Equipment equipment in equipments)
             {
                 bagpack.Add(equipment);
             }
-
             Cloth cloth = new Cloth("Brand");
             List<Cloth> clothes = Utils.GenerateClothes(1);
             bagpack.Add(cloth);
+
             //when
             walker.EmptyBagpack();
 
@@ -225,9 +213,9 @@ namespace TestWalkingInTheWild
         {
             //given
             //refer to Setup method
+            walker.TakeBagpack(bagpack);
 
             //when
-
 
             //then
             Assert.Throws<EmptyBagpackException>(delegate { walker.EmptyBagpack(); });
